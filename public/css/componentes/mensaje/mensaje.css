@@ -1,0 +1,37 @@
+.mensajeContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 33px 30px;
+}
+.mensajeTitulo {
+  font-size: 48px;
+  font-family: var(--oswald);
+
+  font-weight: 600;
+  font-style: bold;
+}
+.sucess {
+  color: var(--success-color);
+}
+.error {
+  color: var(--warning-color);
+}
+.mensajeContainer__btn {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5rem;
+}
+.mensaje__btn {
+  padding: 8px 16px;
+  background-color: var(--btnTabla);
+  color: var(--blanco);
+  font-size: var(--openSans);
+  border-radius: 10px;
+}

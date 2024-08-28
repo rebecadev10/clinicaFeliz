@@ -1,0 +1,106 @@
+.personal__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 33px 30px;
+}
+.personal__tabla-container {
+  width: 960px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.personal__tabla {
+  width: 100%;
+  /* margin: 12rem; */
+  border-collapse: collapse;
+  display: table;
+  border-radius: 10px;
+  padding: 4px;
+}
+.personal__tabla th,
+td {
+  text-align: center;
+  vertical-align: middle; /* Alineación vertical del texto al centro */
+}
+.personal__tabla th {
+  background-color: var(--primary-color);
+  color: var(--blanco);
+  font-family: var(--openSans);
+  text-transform: uppercase;
+  padding-top: 4px;
+  font-weight: bold;
+  height: 65px;
+}
+.personal__tabla td {
+  height: 60px;
+  border: 1px solid var(--primary-color);
+}
+
+.personal__btn-detalle {
+  background-color: var(--btnTabla);
+  padding: 8px;
+  border-radius: 10px;
+  color: var(--blanco);
+  font-family: var(--openSans);
+  text-align: center;
+}
+
+/* estilos encabezado */
+.personal__encabezado {
+  display: flex;
+
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  padding: 24px 0px;
+}
+.personal__titulo {
+  text-align: left;
+  font-size: var(--font-size-card-title);
+  font-family: var(--oswald);
+  color: var(--azul-rey);
+  text-transform: uppercase;
+}
+.personal__btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #3d3a4e;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.personal__btn:hover::before {
+  transform: scaleX(1);
+}
+.personal__btn-content {
+  position: relative;
+  z-index: 1;
+}
+.personal__btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(
+    82.3deg,
+    rgb(50, 30, 231) 10.8%,
+    rgb(7, 1, 84) 94.3%
+  );
+  transition: all 0.275s;
+}

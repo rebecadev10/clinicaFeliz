@@ -1,0 +1,46 @@
+:root {
+  --montserrat: "Montserrat", sans-serif;
+  --oswald: "Oswald", sans-serif;
+  --openSans: "Open Sans", sans-serif;
+
+  --font-weigth-input: 300;
+
+  --font-size-logo: 28px;
+  --font-size-card-title: 28px;
+  --font-size-input-label: 20px;
+  --font-size-button: 22px;
+  --font-size-form-fieldset: 22px;
+  --font-size-table-header: 22px;
+  --font-size-modal-title: 28px;
+  --font-size-modal-button: 28px;
+
+  --fondo: #efefef;
+  --blanco: #f4f4f4;
+  --blancoA: #ffffff;
+  --negro: #000000;
+  --gris: #585858cd;
+  --grisClaro: #b6b6b6;
+  --grisPalido: rgba(255, 255, 255, 0.654);
+  --clinica1: #15d6d0;
+  --clinica: rgba(0, 15, 154, 0.701);
+  /*  */
+  --primary-color: #0071ea;
+  --azul-texto: rgb(65, 105, 225);
+  --azul-rey: #1d12ba;
+  --azul-claro: #c9efff;
+  --secondary-color: #e7f3ff;
+  --contrast-dark-color: #4d4d4d;
+  --contrast-light-color: #fff;
+  --warning-color: #df2525;
+  --success-color: #57d652;
+  --transparency-color: #4d4d4d33;
+  --navbar: #04015b;
+  --btnTabla: #d8551d;
+  --shadow: 0 5px 10px #55a6ff38;
+}
+
+@media (min-width: 800px) {
+  :root {
+    --font-size-logo: 56px;
+  }
+}

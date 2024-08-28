@@ -1,0 +1,57 @@
+@import url(reset.css);
+@import url(variables.css);
+
+body {
+  background-color: var(--fondo); /* Establece el color de fondo */
+  /* Centra la imagen horizontal y verticalmente */
+  color: var(--negro);
+  font-family: var(--montserrat);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.ocultar {
+  display: none;
+}
+.contenido {
+  padding-top: 78px;
+}
+.wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+.container {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.flex--column {
+  flex-direction: column;
+}
+
+.inactive {
+  display: none;
+}
+
+@media (min-width: 800px) {
+  .container {
+    padding-right: 2.5rem;
+    padding-left: 2.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding-left: calc((100vw - 900px) / 2);
+    padding-right: calc((100vw - 900px) / 2);
+  }
+}
