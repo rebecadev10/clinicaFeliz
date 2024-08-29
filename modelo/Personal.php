@@ -1,65 +1,162 @@
 <?php
-require "../Config/Conexion.php";
 
 class Personal
 {
+    private $file = '../data/personal.json'; // Ruta al archivo JSON
 
     public function __construct() {}
+
+    // Leer y devolver todos los registros de personal
     public function listar()
     {
-        $sql = " SELECT codPersonal,cedula, CONCAT(nombre1,' ',nombre2)AS nombres,CONCAT(apellido1,' ',apellido2)AS apellidos,e.desEspecialidad,c.desCargos,d.desDepartamento FROM personal p INNER JOIN especialidades e ON p.codEspecialidad = e.codEspecialidad INNER JOIN cargos c ON p.codCargo=c.codCargos INNER JOIN departamentos d ON p.codDepartamento = d.codDepartamento";
-        return ejecutarConsulta($sql);
+        return $this->leerArchivo();
     }
-    public function insertarDatos($codPersonal, $cedula, $nombre1, $nombre2, $apellido1, $apellido2, $codEspecialidad, $codCargo, $codDepartamento, $turno,  $fechaIngreso, $fechaEgreso,)
+
+    // Insertar un nuevo registro en el archivo JSON
+    public function insertarDatos($cedula, $nombre1, $nombre2, $apellido1, $apellido2, $codEspecialidad, $codCargo, $codDepartamento, $turno, $fechaIngreso, $fechaEgreso)
     {
+        $data = $this->leerArchivo();
 
-
-        // Verificar si la cédula ya existe en la base de datos
-        $sql_verificar = "SELECT cedula FROM personal WHERE cedula = '$cedula'";
-        $resultado_verificar = ejecutarConsulta($sql_verificar);
-        if ($resultado_verificar && mysqli_num_rows($resultado_verificar) > 0) {
-            // La cédula ya existe, no se inserta la información
-            return false;
-        } else {
-
-            // La cédula no existe, se procede a insertar la información
-            $sql_insertar = "INSERT INTO personal(codPersonal, cedula, nombre1,nombre2,apellido1, apellido2,codEspecialidad,codCargo,codDepartamento, turno,fechaIngreso,fechaEgreso) VALUES 
-                ('$codPersonal','$cedula','$nombre1','$nombre2','$apellido1','$apellido2','$codEspecialidad','$codCargo','$codDepartamento','$turno','$fechaIngreso','$fechaEgreso')";
-            return ejecutarConsulta($sql_insertar);
+        // Verificar si la cédula ya existe en el archivo
+        foreach ($data as $registro) {
+            if ($registro['cedula'] == $cedula) {
+                return false; // La cédula ya existe
+            }
         }
-    }
-    public function editarDatos($codPersonal, $cedula, $nombre1, $nombre2, $apellido1, $apellido2, $codEspecialidad, $codCargo, $codDepartamento, $turno,  $fechaIngreso, $fechaEgreso)
-    {
-        $sql = "UPDATE personal SET cedula='$cedula',nombre1='$nombre1',nombre2='$nombre2',apellido1='$apellido1', apellido2='$apellido2', codEspecialidad='$codEspecialidad',codCargo='$codCargo',codDepartamento='$codDepartamento',
-        turno='$turno',fechaIngreso='$fechaIngreso',fechaEgreso='$fechaEgreso'
-        WHERE codPersonal='$codPersonal'";
-        return ejecutarConsulta($sql);
+
+        // Determinar el siguiente codPersonal
+        $ultimoId = 0;
+        foreach ($data as $registro) {
+            if (isset($registro['codPersonal']) && $registro['codPersonal'] > $ultimoId) {
+                $ultimoId = $registro['codPersonal'];
+            }
+        }
+        $nuevoCodPersonal = $ultimoId + 1;
+
+        // Convertir los códigos a enteros
+        $codEspecialidad = (int)$codEspecialidad;
+        $codCargo = (int)$codCargo;
+        $codDepartamento = (int)$codDepartamento;
+        $turno = (int)$turno;
+
+        // Crear un nuevo registro
+        $nuevoRegistro = [
+            "codPersonal" => $nuevoCodPersonal,
+            "cedula" => $cedula,
+            "nombre1" => $nombre1,
+            "nombre2" => $nombre2,
+            "apellido1" => $apellido1,
+            "apellido2" => $apellido2,
+            "codEspecialidad" => $codEspecialidad,
+            "codCargo" => $codCargo,
+            "codDepartamento" => $codDepartamento,
+            "turno" => $turno,
+            "fechaIngreso" => $fechaIngreso,
+            "fechaEgreso" => $fechaEgreso
+        ];
+
+        $data[] = $nuevoRegistro;
+        return $this->escribirArchivo($data);
     }
 
+
+    // Actualizar un registro existente en el archivo JSON
+    public function editarDatos($codPersonal, $cedula, $nombre1, $nombre2, $apellido1, $apellido2, $codEspecialidad, $codCargo, $codDepartamento, $turno, $fechaIngreso, $fechaEgreso)
+    {
+        // Leer el archivo JSON
+        $data = $this->leerArchivo();
+
+        // Recorrer los registros para encontrar el que coincide con codPersonal
+        foreach ($data as &$registro) {
+            if ($registro['codPersonal'] == $codPersonal) {
+                // Actualizar los datos del registro encontrado
+                $registro['cedula'] = $cedula;
+                $registro['nombre1'] = $nombre1;
+                $registro['nombre2'] = $nombre2;
+                $registro['apellido1'] = $apellido1;
+                $registro['apellido2'] = $apellido2;
+
+                // Convertir los campos a enteros antes de asignarlos
+                $registro['codEspecialidad'] = (int)$codEspecialidad;
+                $registro['codCargo'] = (int)$codCargo;
+                $registro['codDepartamento'] = (int)$codDepartamento;
+
+                // Asignar el turno y las fechas sin cambios
+                $registro['turno'] = $turno;
+                $registro['fechaIngreso'] = $fechaIngreso;
+                $registro['fechaEgreso'] = $fechaEgreso;
+                break;
+            }
+        }
+
+        // Guardar los datos actualizados en el archivo JSON
+        return $this->escribirArchivo($data);
+    }
+
+    // Mostrar un registro específico por su ID
     public function mostrar($codPersonal)
     {
-        $sql = "SELECT codPersonal,cedula, nombre1,nombre2,apellido1,apellido2,p.codEspecialidad,e.desEspecialidad,p.codCargo,c.desCargos,p.codDepartamento,d.desDepartamento, turno,disponibilidad,fechaIngreso,fechaEgreso,cantPacientes,cantCitas 
-        FROM personal p 
-        INNER JOIN especialidades e ON p.codEspecialidad = e.codEspecialidad
-        INNER JOIN cargos c ON p.codCargo=c.codCargos 
-        INNER JOIN departamentos d ON p.codDepartamento = d.codDepartamento
-        WHERE p.codPersonal ='$codPersonal'";
-        return ejecutarConsultaSimpleFila($sql);
-    }
-    public function listarPersonal()
-    {
-        $sql = "SELECT  codPersonal , CONCAT('V-', cedula ,' ', nombre1 ,' ', apellido1 )AS datosPersonal FROM  personal ";
-        return ejecutarConsulta($sql);
-    }
-    public function listarPersonalTurno($turno, $especialidadSeleccionada)
-    {
-        $sql = "SELECT  codPersonal , CONCAT('V-', cedula ,' ', nombre1 ,' ', apellido1 )AS datosPersonal FROM  personal WHERE turno ='$turno' AND codEspecialidad ='$especialidadSeleccionada' ";
-        return ejecutarConsulta($sql);
+        $data = $this->leerArchivo();
+
+        foreach ($data as $registro) {
+            if ($registro['codPersonal'] == $codPersonal) {
+                return $registro;
+            }
+        }
+
+        return null; // No se encontró el registro
     }
 
-    public function disponobilidadPersonal($fechaCita, $codPersonal)
+    // Listar personal con un formato específico
+    public function listarPersonal()
     {
-        $sql = "SELECT CONCAT('V ', p.cedula ,' ', p.nombre1 ,' ', p.apellido1 ) AS datosPersonal, fechaCita, COUNT(*) AS cantidad_citas FROM citas c INNER JOIN personal p ON p.codPersonal = c.codPersonal WHERE c.fechaCita = '$fechaCita' AND c.codPersonal ='$codPersonal' GROUP BY c.codPersonal, c.fechaCita ORDER BY fechaCita ASC";
-        return ejecutarConsultaSimpleFila($sql);
+        $data = $this->listar();
+        $resultados = [];
+
+        foreach ($data as $registro) {
+            $resultados[] = [
+                'codPersonal' => $registro['codPersonal'],
+                'datosPersonal' => 'V-' . $registro['cedula'] . ' ' . $registro['nombre1'] . ' ' . $registro['apellido1']
+            ];
+        }
+
+        return $resultados;
+    }
+
+    // Listar personal por turno y especialidad
+    public function listarPersonalTurno($turno, $especialidadSeleccionada)
+    {
+        $data = $this->listar();
+        $resultados = [];
+
+        foreach ($data as $registro) {
+            if ($registro['turno'] == $turno && $registro['codEspecialidad'] == $especialidadSeleccionada) {
+                $resultados[] = [
+                    'codPersonal' => $registro['codPersonal'],
+                    'datosPersonal' => 'V-' . $registro['cedula'] . ' ' . $registro['nombre1'] . ' ' . $registro['apellido1']
+                ];
+            }
+        }
+
+        return $resultados;
+    }
+
+    // Leer el archivo JSON
+    private function leerArchivo()
+    {
+        if (!file_exists($this->file)) {
+            return []; // Retornar un array vacío si el archivo no existe
+        }
+
+        $data = file_get_contents($this->file);
+        return json_decode($data, true); // Convertir el JSON a array asociativo
+    }
+
+    // Escribir en el archivo JSON
+    private function escribirArchivo($data)
+    {
+        $jsonData = json_encode($data, JSON_PRETTY_PRINT);
+        $resultado = file_put_contents($this->file, $jsonData);
+        return $resultado !== false; // Devuelve true si la escritura fue exitosa
     }
 }

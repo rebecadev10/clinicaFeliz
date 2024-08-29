@@ -10,12 +10,26 @@ $personal = new Personal();
 require_once "../Modelo/Clinica.php";
 $clinica = new Clinica();
 $datosPersonal = $personal->mostrar($codePersonal);
-
+var_dump($datosPersonal);
 
 // Obtener las especialidades, cargos y departamentos
 $especialidades = $clinica->listarEspecialidades();
 $cargos = $clinica->listarCargos();
 $departamentos = $clinica->listarDepartamentos();
+// Verifica si los datos se recibieron correctamente
+if (empty($especialidades)) {
+    echo 'No se encontraron especialidades.';
+    exit;
+}
+if (empty($cargos)) {
+    echo 'No se encontraron cargos.';
+    exit;
+}
+if (empty($departamentos)) {
+    echo 'No se encontraron departamentos.';
+    exit;
+}
+
 ?>
 
 <div class="personalDetalle__container">
@@ -76,17 +90,17 @@ $departamentos = $clinica->listarDepartamentos();
                         <span>Especialidad</span>
                     </label>
                     <select title="Especialidades" name="codEspecialidad" id="" class="personalDetalle__select">
-
                         <?php
-                        // Mostrar datos tabla de definicion especialidad
-                        while ($reg = $especialidades->fetch_object()) {
-
-                            // Compara el valor actual con el valor almacenado
-                            $selected = ($reg->codEspecialidad == $datosPersonal['codEspecialidad']) ? 'selected' : '';
-                            echo '<option value="' . $reg->codEspecialidad . '" ' . $selected . '>' . $reg->desEspecialidad . '</option>';
+                        // Mostrar datos de especialidades desde el array
+                        foreach ($especialidades as $reg) {
+                            // Compara el valor actual con el valor almacenado en $datosPersonal['codEspecialidad']
+                            $selected = ($reg->id == $datosPersonal['codEspecialidad']) ? 'selected' : '';
+                            echo '<option value="' . htmlspecialchars($reg['id']) . '"' . $selected . '>' . htmlspecialchars($reg['nombre']) . '</option>';
                         }
+
                         ?>
                     </select>
+
                 </div>
                 <div class="personalDetalle__select-container">
                     <label>
@@ -96,12 +110,14 @@ $departamentos = $clinica->listarDepartamentos();
                     </label>
                     <select title="Cargos" name="codCargo" id="" class="personalDetalle__select">
                         <?php
-                        // Mostrar datos tabla de definicion cargos
-                        while ($reg = $cargos->fetch_object()) {
-                            // Compara el valor actual con el valor almacenado
-                            $selected = ($reg->codCargos == $datosPersonal['codCargos']) ? 'selected' : '';
-                            echo '<option value="' . $reg->codCargos . '"' . $selected . '>' . $reg->desCargos . '</option>';
+
+                        foreach ($especialidades as $reg) {
+                            // Compara el valor actual con el valor almacenado en $datosPersonal['codEspecialidad']
+                            $selected = ($reg->id == $datosPersonal['codCargos']) ? 'selected' : '';
+                            echo '<option value="' . htmlspecialchars($reg['id']) . '"' . $selected . '>' . htmlspecialchars($reg['nombre']) . '</option>';
                         }
+
+
                         ?>
                     </select>
                 </div>
@@ -115,12 +131,14 @@ $departamentos = $clinica->listarDepartamentos();
                     </label>
                     <select title="Departamentos" name="codDepartamento" id="" class="personalDetalle__select">
                         <?php
-                        // Mostrar datos tabla de definicion departamento
-                        while ($reg = $departamentos->fetch_object()) {
-                            // Compara el valor actual con el valor almacenado
-                            $selected = ($reg->codDepartamento == $datosPersonal['codDepartamento']) ? 'selected' : '';
-                            echo '<option value="' . $reg->codDepartamento . '"' . $selected . '>' . $reg->desDepartamento . '</option>';
+                        foreach ($especialidades as $reg) {
+                            // Compara el valor actual con el valor almacenado en $datosPersonal['codEspecialidad']
+                            $selected = ($reg->id == $datosPersonal['codDepartamento']) ? 'selected' : '';
+                            echo '<option value="' . htmlspecialchars($reg['id']) . '"' . $selected . '>' . htmlspecialchars($reg['nombre']) . '</option>';
                         }
+
+
+
                         ?>
                     </select>
                 </div>

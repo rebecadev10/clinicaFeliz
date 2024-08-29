@@ -1,31 +1,22 @@
 <?php
-require_once "../Modelo/Clinica.php";
+require_once '../Modelo/Clinica.php';
+
 $clinica = new Clinica();
 
-switch ($_GET["op"]) {
+header('Content-Type: application/json'); // Asegúrate de establecer el encabezado correcto
 
+switch ($_GET['op']) {
     case 'listarEspecialidad':
 
-        $rspta = $clinica->listarEspecialidades();
-
-        while ($reg = $rspta->fetch_object()) {
-            echo '<option value=' . $reg->codEspecialidad . '>' . $reg->desEspecialidad . '</option>';
-        }
+        echo json_encode($clinica->listarEspecialidades());
         break;
     case 'listarCargo':
-
-        $rspta = $clinica->listarCargos();
-
-        while ($reg = $rspta->fetch_object()) {
-            echo '<option value=' . $reg->codCargos . '>' . $reg->desCargos . '</option>';
-        }
+        echo json_encode($clinica->listarCargos());
         break;
     case 'listarDepartamento':
-
-        $rspta = $clinica->listarDepartamentos();
-
-        while ($reg = $rspta->fetch_object()) {
-            echo '<option value=' . $reg->codDepartamento . '>' . $reg->desDepartamento . '</option>';
-        }
+        echo json_encode($clinica->listarDepartamentos());
+        break;
+    default:
+        echo json_encode(['error' => 'Falta el parámetro "op"']);
         break;
 }

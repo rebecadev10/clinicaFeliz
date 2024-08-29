@@ -9,7 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: citaDetalle.php?turno=" . urlencode($turnoSeleccionado) . "&especialidad=" . urlencode($especialidadSeleccionada));
     exit();
 }
-include '../controlador/clinica.php';
+
+require '../modelo/Clinica.php';
+
+// Crear una instancia de la clase Clinica
+$clinica = new Clinica();
 
 $especialidades = $clinica->listarEspecialidades();
 ?>
@@ -36,9 +40,9 @@ $especialidades = $clinica->listarEspecialidades();
                 <select title="Especialidades" name="codEspecialidad" id="" class="personalDetalle__select">
 
                     <?php
-                    // Mostrar datos tabla de definicion especialidad
-                    while ($reg = $especialidades->fetch_object()) {
-                        echo '<option value="' . $reg->codEspecialidad . '">' . $reg->desEspecialidad . '</option>';
+                    // Mostrar datos de especialidades desde el array
+                    foreach ($especialidades as $reg) {
+                        echo '<option value="' . htmlspecialchars($reg['id']) . '">' . htmlspecialchars($reg['nombre']) . '</option>';
                     }
                     ?>
                 </select>

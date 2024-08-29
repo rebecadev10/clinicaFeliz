@@ -1,10 +1,6 @@
 <?php
 require 'componentes/header.php';
-include '../controlador/clinica.php';
-// Obtener las especialidades, cargos y departamentos
-$especialidades = $clinica->listarEspecialidades();
-$cargos = $clinica->listarCargos();
-$departamentos = $clinica->listarDepartamentos();
+
 ?>
 
 <div class="personalDetalle__container">

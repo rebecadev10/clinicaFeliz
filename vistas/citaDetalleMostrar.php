@@ -1,23 +1,28 @@
 <?php
 
+
+
+
+
+// require 'componentes/header.php';
+require '../modelo/Paciente.php';
+require '../modelo/Personal.php';
+require '../modelo/Citas.php';
+
+// Instancias de los modelos
+$paciente = new Paciente();
+$personal = new Personal();
+$cita = new Cita();
+// oobtenemos el codigo de la cita que se va a modificar
 $codCita = isset($_GET['codCita']) ? $_GET['codCita'] : '';
 
-
-
-
-require 'componentes/header.php';
-require '../modelo/Paciente.php';
-$paciente = new Paciente();
-require '../modelo/Personal.php';
-$personal = new Personal();
-require '../modelo/Citas.php';
-$cita = new Cita();
 // Obtener las especialidades, cargos y departamentos
 $pacientes = $paciente->listarPacientes();
-$personal = $personal->listarPersonal();
+$personalTurno = $personal->listarPersonalTurno($turnoSeleccionado, $especialidadSeleccionada);
 $diagnosticos = $cita->listarDiagnosticos();
-$datosCita = $cita->mostrar($codCita);
 
+$datosCita = $cita->mostrar($codCita);
+var_dump($datosCita);
 ?>
 
 <div class="personalDetalle__container">
@@ -48,13 +53,9 @@ $datosCita = $cita->mostrar($codCita);
                         <span>Reasignar Medico:</span>
                     </label>
                     <select title="personal" name="codPersonal" id="" class="personalDetalle__select">
-                        <?php
-                        // Mostrar datos tabla de definicion cargos
-                        while ($reg = $personal->fetch_object()) {
-                            $selected = ($reg->codPersonal == $datosCita['codPersonal']) ? 'selected' : '';
-                            echo '<option value="' . $reg->codPersonal . '" ' . $selected . '>' . $reg->datosPersonal . '</option>';
-                        }
-                        ?>
+                        <?php foreach ($personalTurno as $reg) : ?>
+                            <option value="<?= $reg['codPersonal'] ?>"><?= $reg['datosPersonal'] ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
@@ -87,6 +88,17 @@ $datosCita = $cita->mostrar($codCita);
                         <input class="personalDetalle__select" type="date" name="fechaCita" placeholder="" required=""
                             value="<?php echo $datosCita['fechaCita']; ?>">
 
+                    </div>
+                    <div class="personalDetalle__flex">
+                        <div class="personalDetalle__select-container">
+                            <label>Hora para la Cita</label>
+                            <select name="horaCita" class="personalDetalle__select" required>
+                                <option value="" disabled selected>Seleccione una hora</option>
+                                <?php foreach ($horas as $hora) : ?>
+                                    <option value="<?= $hora ?>"><?= date('h:i a', strtotime($hora)) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
 
                 <?php

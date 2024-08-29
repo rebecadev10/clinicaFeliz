@@ -18,7 +18,7 @@ if (!isset($_SESSION['listaCita'])) {
 // Recibir el total de registros de la variable $result almacenada en la sesión
 $totalRegistros = $result['total'];
 $data = $result['registros'];
-
+var_dump($data);
 // Definir el número de registros por página
 $registrosPorPagina = 5;
 
@@ -53,7 +53,7 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
                     <th>Nombre medico</th>
                     <th>Fecha Cita</th>
                     <th>diagnostico</th>
-                    <th>Observacion</th>
+
 
                 </tr>
             </thead>
@@ -65,13 +65,13 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
                 ?>
 
                     <tr>
-                        <td><a class="personal__btn-detalle" href="citaDetalleMostrar.php?codCita=<?php echo $reg->codCita; ?>">Ver</a></td>
-                        <td><?php echo $reg->cedulaPaciente; ?></td>
-                        <td><?php echo $reg->nombrePaciente; ?></td>
-                        <td><?php echo $reg->nombrePersonal; ?></td>
-                        <td><?php echo $reg->fechaCita; ?></td>
-                        <td><?php echo $reg->diagnostico; ?></td>
-                        <td><?php echo $reg->observaciones; ?></td>
+                        <td><a class="personal__btn-detalle" href="citaDetalleMostrar.php?codCita=<?php echo $reg['codCita']; ?>">Ver</a></td>
+                        <td><?php echo $reg['cedulaPaciente']; ?></td>
+                        <td><?php echo $reg['nombrePaciente']; ?></td>
+                        <td><?php echo $reg['nombrePersonal']; ?></td>
+                        <td><?php echo $reg['fechaCita']; ?></td>
+                        <td><?php echo $reg['horaCita']; ?></td>
+
                     </tr>
                 <?php endfor; ?>
             </tbody>

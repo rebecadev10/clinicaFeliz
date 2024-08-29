@@ -19,20 +19,41 @@ $telefono = isset($_POST["telefono"]) ? limpiarCadena($_POST["telefono"]) : "";
 switch ($_GET["op"]) {
 
     case 'listar':
+        // Llama al método 'listar' del modelo
         $rspta = $paciente->listar();
+
+        // Prepara un array para almacenar los datos
         $data = array();
-        while ($reg = $rspta->fetch_object()) {
-            $data[] = $reg;
+
+        // Recorre directamente el array y agrega cada registro al array de datos
+        foreach ($rspta as $reg) {
+            $data[] = array(
+                'codPaciente' => $reg['codPaciente'],
+                'cedula' => $reg['cedula'],
+                'nombre1' => $reg['nombre1'],
+                'nombre2' => $reg['nombre2'],
+                'apellido1' => $reg['apellido1'],
+                'apellido2' => $reg['apellido2'],
+                'fechaNac' => $reg['fechaNac'],
+                'sexo' => $reg['sexo'],
+                'correo' => $reg['correo'],
+                'telefono' => $reg['telefono']
+            );
         }
+
+        // Prepara el resultado con el total de registros y los registros
         $result = array('total' => count($data), 'registros' => $data);
-        return $result;
+
+        // Devuelve los datos como JSON
+        echo json_encode($result);
+        break;
 
     case 'guardarEditar':
         if (empty($codPaciente)) {
 
 
 
-            $rspta = $paciente->insertarDatos($codPaciente, $cedula, $nombre1, $nombre2, $apellido1, $apellido2, $fechaNac, $sexo, $correo, $telefono);
+            $rspta = $paciente->insertarDatos($cedula, $nombre1, $nombre2, $apellido1, $apellido2, $fechaNac, $sexo, $correo, $telefono);
             // echo $rspta ? "Los Datos han sido cargados exitosamente" : "";
             if ($rspta) {
                 // Redirigir al usuario si la operación fue exitosa
@@ -62,9 +83,9 @@ switch ($_GET["op"]) {
     case 'listarPacientes':
 
         $rspta = $paciente->listarPacientes();
-
-        while ($reg = $rspta->fetch_object()) {
-            echo '<option value=' . $reg->codPaciente . '>' . $reg->datosPaciente . '</option>';
+        foreach ($rspta as $reg) {
+            echo '<option value="' . $reg['codPaciente'] . '">' . $reg['datosPaciente'] . '</option>';
         }
+
         break;
 }

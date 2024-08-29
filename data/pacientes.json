@@ -1,0 +1,14 @@
+[
+    {
+        "codPaciente": 1,
+        "cedula": "15713515",
+        "nombre1": "alejandra",
+        "nombre2": "fabiola",
+        "apellido1": "rodriguez",
+        "apellido2": "millan",
+        "fechaNac": "1982-03-10",
+        "sexo": "Femenino",
+        "correo": "trenard@gmail.com",
+        "telefono": "0412-252-6382"
+    }
+]
