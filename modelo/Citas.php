@@ -7,6 +7,8 @@ class Cita
     private $personalFile = '../data/personal.json';
     private $diagnosticosFile = '../data/datos/diagnosticos.json';
 
+    private $departamentoFile = '../data/datos/departamentos.json';
+
     private function readJson($filename)
     {
         if (!file_exists($filename)) {
@@ -54,7 +56,19 @@ class Cita
     {
         $citas = $this->readJson($this->file);
 
-        // Verificar disponibilidad
+        // Si no hay citas, el codCita será 1
+        if (empty($citas)) {
+            $codCita = 1;
+        } else {
+            // Si se está agregando una nueva cita sin un codCita específico, asignar el siguiente número disponible
+            if ($codCita == 0) {
+                // Obtener el mayor codCita existente y sumarle 1
+                $maxCodCita = max(array_column($citas, 'codCita'));
+                $codCita = $maxCodCita + 1;
+            }
+        }
+
+        // Verificar disponibilidad de la cita para el mismo médico, fecha y hora
         $disponibilidad = array_filter($citas, fn($c) => $c['codPersonal'] == $codPersonal && $c['fechaCita'] == $fechaCita && $c['horaCita'] == $horaCita);
         if (count($disponibilidad) > 0) {
             // La cita ya existe
@@ -72,28 +86,11 @@ class Cita
             'codDiagnostico' => (int)$codDiagnostico,
             'observaciones' => $observaciones,
         ];
+
         $this->writeJson($this->file, $citas);
         return true;
     }
 
-    public function editarDatos($codCita, $codPaciente, $codPersonal, $fechaCita, $horaCita, $estado, $codDiagnostico, $observaciones)
-    {
-        $citas = $this->readJson($this->file);
-        foreach ($citas as &$cita) {
-            if ($cita['codCita'] == $codCita) {
-                $cita['codPaciente'] = (int)$codPaciente;
-                $cita['codPersonal'] = (int)$codPersonal;
-                $cita['fechaCita'] = $fechaCita;
-                $cita['horaCita'] = $horaCita;
-                $cita['estado'] = $estado;
-                $cita['codDiagnostico'] = (int)$codDiagnostico;
-                $cita['observaciones'] = $observaciones;
-                $this->writeJson($this->file, $citas);
-                return true;
-            }
-        }
-        return false;
-    }
 
     public function mostrar($codCita)
     {
@@ -101,6 +98,7 @@ class Cita
         $pacientes = $this->readJson($this->pacientesFile);
         $personal = $this->readJson($this->personalFile);
         $diagnosticos = $this->readJson($this->diagnosticosFile);
+        $departamentos = $this->readJson($this->departamentoFile);
 
         $cita = array_filter($citas, fn($c) => $c['codCita'] == $codCita);
         if (!$cita) {
@@ -110,16 +108,35 @@ class Cita
 
         $paciente = array_filter($pacientes, fn($p) => $p['codPaciente'] == $cita['codPaciente']);
         $medico = array_filter($personal, fn($p) => $p['codPersonal'] == $cita['codPersonal']);
-        $diagnostico = array_filter($diagnosticos, fn($d) => $d['codDiagnostico'] == $cita['codDiagnostico']);
+
+        // Verifica si se encontró un médico
+        if ($medico) {
+            $medico = reset($medico); // Obtener el primer (y único) médico encontrado
+            if (is_array($medico)) {
+                $departamento = array_filter($departamentos, fn($d) => $d['id'] == $medico['codDepartamento']);
+            } else {
+                $departamento = null;
+            }
+        } else {
+            $medico = null;
+            $departamento = null;
+        }
+
+        $diagnostico = array_filter($diagnosticos, fn($d) => $d['id'] == $cita['codDiagnostico']);
 
         return [
             'codCita' => $cita['codCita'],
-            'datosPaciente' => $paciente ? reset($paciente)['nombre'] : '',
-            'datosPersonal' => $medico ? reset($medico)['nombre'] : '',
+            'idPaciente' => reset($paciente)['codPaciente'],
+            'datosPaciente' => $paciente && is_array(reset($paciente)) ? 'V-' . reset($paciente)['cedula'] . ' ' . reset($paciente)['nombre1'] . ' ' . reset($paciente)['apellido1'] : '',
+            'datosPersonal' => $medico && is_array($medico) ? 'V-' . $medico['cedula'] . ' ' . $medico['nombre1'] . ' ' . $medico['apellido1'] : '',
+            'turno' => $medico && is_array($medico) ? $medico['turno'] : '',
+            'especialidad' => $medico && is_array($medico) ? $medico['codEspecialidad'] : '',
             'fechaCita' => $cita['fechaCita'],
+            'horaCita' => $cita['horaCita'],
             'estado' => $cita['estado'],
-            'diagnostico' => $diagnostico ? reset($diagnostico)['desDiagnostico'] : '',
+            'diagnostico' => $diagnostico && is_array(reset($diagnostico)) ? reset($diagnostico)['descripcion'] : '',
             'observaciones' => $cita['observaciones'],
+            'descDepartamento' => $departamento && is_array(reset($departamento)) ? reset($departamento)['nombre'] : '',
         ];
     }
 

@@ -202,3 +202,8 @@
   color: var(--azul-rey);
   font-weight: 300;
 }
+.avisoAlert {
+  color: var(--warning-color);
+  text-transform: uppercase;
+  font-style: bold;
+}

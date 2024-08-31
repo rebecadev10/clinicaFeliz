@@ -1,12 +1,12 @@
 [
-  {
-    "codCita": 0,
-    "codPaciente": 1,
-    "codPersonal": 2,
-    "fechaCita": "2024-08-30",
-    "horaCita": "13:00:00",
-    "estado": "Asignado",
-    "codDiagnostico": 1,
-    "observaciones": "prueba 1 cita"
-  }
+    {
+        "codCita": 1,
+        "codPaciente": 1,
+        "codPersonal": 2,
+        "fechaCita": "2024-08-30",
+        "horaCita": "13:00:00",
+        "estado": "Asignado",
+        "codDiagnostico": 1,
+        "observaciones": "urgente"
+    }
 ]

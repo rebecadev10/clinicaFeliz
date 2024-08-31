@@ -26,11 +26,15 @@ class Personal
 
         // Determinar el siguiente codPersonal
         $ultimoId = 0;
-        foreach ($data as $registro) {
-            if (isset($registro['codPersonal']) && $registro['codPersonal'] > $ultimoId) {
-                $ultimoId = $registro['codPersonal'];
+        if (!empty($data)) {
+            foreach ($data as $registro) {
+                if (isset($registro['codPersonal']) && $registro['codPersonal'] > $ultimoId) {
+                    $ultimoId = $registro['codPersonal'];
+                }
             }
         }
+
+        // Si no hay registros, el primer codPersonal será 1
         $nuevoCodPersonal = $ultimoId + 1;
 
         // Convertir los códigos a enteros
