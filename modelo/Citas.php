@@ -144,4 +144,30 @@ class Cita
     {
         return $this->readJson($this->diagnosticosFile);
     }
+    public function obtenerCitasPorCedula($cedula)
+    {
+        // Leer el archivo de pacientes para obtener el codPaciente
+        $pacientes = $this->readJson($this->pacientesFile);
+        $paciente = array_filter($pacientes, fn($p) => $p['cedula'] == $cedula);
+
+        if (!$paciente) {
+            return []; // No se encontró el paciente con la cédula proporcionada
+        }
+
+        $paciente = reset($paciente);
+        $codPaciente = $paciente['codPaciente'];
+
+        // Leer las citas y filtrar por el codPaciente
+        $citas = $this->readJson($this->file);
+        $citasPaciente = array_filter($citas, fn($cita) => $cita['codPaciente'] == $codPaciente);
+
+        // Ordenar las citas por fecha (y opcionalmente por hora)
+        usort($citasPaciente, function ($a, $b) {
+            $fechaHoraA = strtotime($a['fechaCita'] . ' ' . $a['horaCita']);
+            $fechaHoraB = strtotime($b['fechaCita'] . ' ' . $b['horaCita']);
+            return $fechaHoraA - $fechaHoraB;
+        });
+
+        return $citasPaciente;
+    }
 }

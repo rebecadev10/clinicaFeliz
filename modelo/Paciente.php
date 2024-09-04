@@ -1,5 +1,5 @@
 <?php
-require "../Config/Conexion.php";
+
 
 class Paciente
 {
@@ -103,6 +103,8 @@ class Paciente
 
         return $resultados;
     }
+
+
     private function leerArchivo()
     {
         if (!file_exists($this->file)) {

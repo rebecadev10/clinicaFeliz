@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="../public/css/componentes/mensaje/mensaje.css">
     <link rel="stylesheet" href="../public/css/componentes/personal/personal.css">
     <link rel="stylesheet" href="../public/css/componentes/personal/personalDetalle.css">
+    <link rel="stylesheet" href="../public/css/componentes/principal/principal.css">
+    <link rel="stylesheet" href="../public/css/componentes/historial/historial.css">
 </head>
 <?php require 'navbar.php' ?>
 

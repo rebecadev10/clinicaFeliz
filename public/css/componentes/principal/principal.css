@@ -1,0 +1,18 @@
+.principal__contenedor {
+  height: 100vh;
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 3rem;
+}
+.principal__titulo {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 4rem;
+  font-family: var(--oswald);
+  font-weight: 600;
+  color: var(--titulos);
+}

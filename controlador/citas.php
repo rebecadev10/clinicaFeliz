@@ -81,4 +81,20 @@ switch ($_GET["op"]) {
         //     echo '<option value="' . htmlspecialchars($reg['codDiagnostico']) . '">' . htmlspecialchars($reg['desDiagnostico']) . '</option>';
         // }
         break;
+
+    case 'listarCitasPorCedula':
+        $citas = $cita->obtenerCitasPorCedula($cedula);
+
+        // Verificar si se encontraron citas
+        if (!empty($citas)) {
+            // Preparar la respuesta
+            $result = array('total' => count($citas), 'citas' => $citas);
+        } else {
+            // No se encontraron citas para la cédula proporcionada
+            $result = array('total' => 0, 'citas' => []);
+        }
+
+        // Devolver el resultado como JSON
+        echo json_encode($result);
+        break;
 }

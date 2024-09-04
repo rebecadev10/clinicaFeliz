@@ -1,0 +1,34 @@
+.historial__contenedor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  padding: 16px;
+  background-color: var(--azul-claro);
+  width: 100%;
+  min-height: 100%;
+  height: 100vh;
+}
+
+.historial__busqueda {
+  padding: 2rem;
+}
+.historial__titulo {
+  font-size: 24px;
+  color: var(--titulos);
+  font-weight: 500;
+  padding: 12px;
+  font-family: var(--montserrat);
+  text-align: left;
+}
+.historial__btn {
+  background-color: var(--azul-rey);
+  padding: 4px 12px;
+  border-radius: 8px;
+  color: var(--blancoA);
+}
+.historial__informacion {
+  display: flex;
+  flex-direction: column;
+}

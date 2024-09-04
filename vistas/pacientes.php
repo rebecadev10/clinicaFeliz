@@ -7,7 +7,7 @@ session_start();
 
 
 // Verificar si los datos ya están en la sesión
-if (!isset($_SESSION[''])) {
+if (!isset($_SESSION['listaPac'])) {
     // Incluir el archivo controlador del paciente y obtener los datos
     include '../controlador/paciente.php';
 
@@ -42,6 +42,9 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
         <h2 class="personal__titulo">
             Pacientes registrados
         </h2>
+        <div class="personal__btn">
+            <a class="personal__btn-content" href="historial.php">Historial Médico</a>
+        </div>
         <div class="personal__btn">
             <a class="personal__btn-content" href="pacienteDetalle.php">Registrar paciente</a>
         </div>
