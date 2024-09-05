@@ -1,4 +1,6 @@
 [
   { "id": 1, "nombre": "Cardiologo" },
-  { "id": 2, "nombre": "Pediatra" }
+  { "id": 2, "nombre": "Pediatra" },
+  { "id": 3, "nombre": "Medico General" },
+  { "id": 4, "nombre": "Enfermero " }
 ]

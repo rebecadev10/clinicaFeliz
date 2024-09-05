@@ -1,16 +1,17 @@
 <?php
 require_once "../Modelo/Paciente.php";
 $paciente = new Paciente();
-$codPaciente = isset($_POST["codPaciente"]) ? limpiarCadena($_POST["codPaciente"]) : "";
-$cedula = isset($_POST["cedula"]) ? limpiarCadena($_POST["cedula"]) : "";
-$nombre1 = isset($_POST["nombre1"]) ? limpiarCadena($_POST["nombre1"]) : "";
-$nombre2 = isset($_POST["nombre2"]) ? limpiarCadena($_POST["nombre2"]) : "";
-$apellido1 = isset($_POST["apellido1"]) ? limpiarCadena($_POST["apellido1"]) : "";
-$apellido2 = isset($_POST["apellido2"]) ? limpiarCadena($_POST["apellido2"]) : "";
-$fechaNac = isset($_POST["fechaNac"]) ? limpiarCadena($_POST["fechaNac"]) : "";
-$sexo = isset($_POST["sexo"]) ? limpiarCadena($_POST["sexo"]) : "";
-$correo = isset($_POST["correo"]) ? limpiarCadena($_POST["correo"]) : "";
-$telefono = isset($_POST["telefono"]) ? limpiarCadena($_POST["telefono"]) : "";
+$codePaciente = isset($_GET["codPaciente"]) ? ($_GET["codPaciente"]) : "";
+$codPaciente = isset($_POST["codPaciente"]) ? ($_POST["codPaciente"]) : "";
+$cedula = isset($_POST["cedula"]) ? ($_POST["cedula"]) : "";
+$nombre1 = isset($_POST["nombre1"]) ? ($_POST["nombre1"]) : "";
+$nombre2 = isset($_POST["nombre2"]) ? ($_POST["nombre2"]) : "";
+$apellido1 = isset($_POST["apellido1"]) ? ($_POST["apellido1"]) : "";
+$apellido2 = isset($_POST["apellido2"]) ? ($_POST["apellido2"]) : "";
+$fechaNac = isset($_POST["fechaNac"]) ? ($_POST["fechaNac"]) : "";
+$sexo = isset($_POST["sexo"]) ? ($_POST["sexo"]) : "";
+$correo = isset($_POST["correo"]) ? ($_POST["correo"]) : "";
+$telefono = isset($_POST["telefono"]) ? ($_POST["telefono"]) : "";
 
 
 
@@ -45,7 +46,7 @@ switch ($_GET["op"]) {
         $result = array('total' => count($data), 'registros' => $data);
 
         // Devuelve los datos como JSON
-        echo json_encode($result);
+        json_encode($result);
         break;
 
     case 'guardarEditar':
@@ -87,5 +88,28 @@ switch ($_GET["op"]) {
             echo '<option value="' . $reg['codPaciente'] . '">' . $reg['datosPaciente'] . '</option>';
         }
 
+        break;
+    case 'verificarCitas':
+        if (empty($codePaciente)) {
+            header("Location: ../vistas/pacienteEliminar.php?error=codigoInvalido");
+            exit();
+        }
+
+        $tieneCitas = $paciente->verificarCitas($codePaciente);
+
+        if ($tieneCitas) {
+            header("Location: ../vistas/pacienteEliminar.php?asignado=true&codPaciente=" . urlencode($codePaciente));
+        } else {
+            header("Location: ../vistas/pacienteEliminar.php?asignado=false&codPaciente=" . urlencode($codePaciente));
+        }
+        break;
+
+    case 'eliminar':
+        $rspta = $personal->eliminar($codPaciente);
+        if ($rspta) {
+            header("Location: ../vistas/mensaje.php?msg=eliminado");
+        } else {
+            header("Location: ../vistas/mensaje.php?msg=error");
+        }
         break;
 }

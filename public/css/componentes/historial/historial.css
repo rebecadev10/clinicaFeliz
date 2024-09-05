@@ -24,11 +24,42 @@
 }
 .historial__btn {
   background-color: var(--azul-rey);
-  padding: 4px 12px;
+  padding: 8px 16px;
   border-radius: 8px;
   color: var(--blancoA);
 }
 .historial__informacion {
   display: flex;
   flex-direction: column;
+  width: 60%;
+}
+.historial__informacion-contenedor {
+  width: 100%;
+  padding: 1rem;
+}
+.historial__informacion-detalle {
+  background-color: var(--blancoA);
+  padding: 20px 16px;
+  border-radius: 8px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.historial__item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.historial__etiqueta {
+  color: var(--navbar);
+  font-size: 20px;
+  font-family: var(--openSans);
+  font-weight: 500;
+}
+.historial__dato {
+  color: var(--gris);
+  font-size: 18px;
+  font-family: var(--openSans);
+  font-weight: 400;
 }

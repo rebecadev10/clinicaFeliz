@@ -4,16 +4,45 @@
 class Paciente
 {
     private $file = '../data/pacientes.json'; // Ruta al archivo JSON
+    private $citas = '../data/citas.json';
     public function __construct() {}
+
+    private function readJson($filename)
+    {
+        if (!file_exists($filename)) {
+            return [];
+        }
+        $json = file_get_contents($filename);
+        return json_decode($json, true);
+    }
+
+    private function writeJson($filename, $data)
+    {
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+
+        if ($json === false) {
+            error_log('Error al convertir datos a JSON: ' . json_last_error_msg());
+            return false;
+        }
+
+        $bytes = file_put_contents($filename, $json);
+
+        if ($bytes === false) {
+            error_log('Error al escribir el archivo JSON: ' . $filename);
+            return false;
+        }
+
+        return true;
+    }
 
     public function listar()
     {
-        return $this->leerArchivo();
+        return  $this->readJson($this->file);
     }
 
     public function insertarDatos($cedula, $nombre1, $nombre2, $apellido1, $apellido2, $fechaNac, $sexo, $correo, $telefono)
     {
-        $data = $this->leerArchivo();
+        $data = $this->readJson($this->file);
 
         // Verificar si la cédula ya existe en el archivo
         foreach ($data as $registro) {
@@ -44,12 +73,13 @@ class Paciente
 
             ];
         $data[] = $nuevoRegistro;
-        return $this->escribirArchivo($data);
+        $this->writeJson($this->file, $data);
+        return true;
     }
     public function editarDatos($codPaciente, $cedula, $nombre1, $nombre2, $apellido1, $apellido2, $fechaNac, $sexo, $correo, $telefono)
     {
         // Leer el archivo JSON
-        $data = $this->leerArchivo();
+        $data = $this->readJson($this->file);
 
         // Recorrer los registros para encontrar el que coincide con codPersonal
         foreach ($data as &$registro) {
@@ -70,13 +100,14 @@ class Paciente
         }
 
         // Guardar los datos actualizados en el archivo JSON
-        return $this->escribirArchivo($data);
+        $this->writeJson($this->file, $data);
+        return true;
     }
 
 
     public function mostrar($codPaciente)
     {
-        $data = $this->leerArchivo();
+        $data = $this->readJson($this->file);
 
         foreach ($data as $registro) {
             if ($registro['codPaciente'] == $codPaciente) {
@@ -103,23 +134,22 @@ class Paciente
 
         return $resultados;
     }
-
-
-    private function leerArchivo()
+    public function verificarCitas($codPaciente)
     {
-        if (!file_exists($this->file)) {
-            return []; // Retornar un array vacío si el archivo no existe
+        $citas = $this->readJson($this->citas);
+        foreach ($citas as $cita) {
+            if ($cita['codPaciente'] == $codPaciente) {
+                return true; // El personal tiene citas asignadas
+            }
         }
-
-        $data = file_get_contents($this->file);
-        return json_decode($data, true); // Convertir el JSON a array asociativo
+        return false; // El personal no tiene citas asignadas
     }
 
-    // Escribir en el archivo JSON
-    private function escribirArchivo($data)
+    public function eliminar($codPaciente)
     {
-        $jsonData = json_encode($data, JSON_PRETTY_PRINT);
-        $resultado = file_put_contents($this->file, $jsonData);
-        return $resultado !== false; // Devuelve true si la escritura fue exitosa
+        $data = $this->readJson($this->file);
+        $data = array_filter($data, fn($registro) => $registro['codPaciente'] != $codPaciente);
+        $this->writeJson($this->file, $data);
+        return true;
     }
 }

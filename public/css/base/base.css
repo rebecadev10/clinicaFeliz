@@ -28,7 +28,9 @@ body {
 .flex {
   display: flex;
 }
-
+.padding {
+  padding: 4px 8px;
+}
 .flex--center {
   align-items: center;
   justify-content: center;

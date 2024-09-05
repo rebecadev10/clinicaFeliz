@@ -11,7 +11,8 @@
         "codDepartamento": "2",
         "turno": "Ma\u00f1ana",
         "fechaIngreso": "2024-08-28",
-        "fechaEgreso": ""
+        "fechaEgreso": "",
+        "disponibilidad": "SI"
     },
     {
         "codPersonal": 2,
@@ -25,7 +26,8 @@
         "codDepartamento": 1,
         "turno": "Tarde",
         "fechaIngreso": "2024-08-28",
-        "fechaEgreso": ""
+        "fechaEgreso": "2024-09-04",
+        "disponibilidad": "NO"
     },
     {
         "codPersonal": 3,
@@ -39,20 +41,22 @@
         "codDepartamento": 2,
         "turno": 1,
         "fechaIngreso": "",
-        "fechaEgreso": "2024-08-28"
+        "fechaEgreso": "2024-08-28",
+        "disponibilidad": "SI"
     },
     {
-        "codPersonal": 4,
-        "cedula": "12345678",
-        "nombre1": "prueba",
-        "nombre2": "prueba2",
-        "apellido1": "prueba3",
-        "apellido2": "prueba4",
-        "codEspecialidad": 2,
+        "codPersonal": 5,
+        "cedula": "12456783",
+        "nombre1": "prueba ACTUALIZAR",
+        "nombre2": "cambios",
+        "apellido1": "funcion PRUEBA",
+        "apellido2": "json",
+        "codEspecialidad": 1,
         "codCargo": 1,
-        "codDepartamento": 2,
+        "codDepartamento": 1,
         "turno": "Tarde",
-        "fechaIngreso": "2024-08-28",
-        "fechaEgreso": ""
+        "fechaIngreso": "2024-09-04",
+        "fechaEgreso": "",
+        "disponibilidad": "SI"
     }
 ]

@@ -1,21 +1,20 @@
 <?php
 require_once "../Modelo/Citas.php";
 
-// Sanitize and validate inputs
-function limpiarCadena($cadena)
-{
-    return htmlspecialchars(trim($cadena), ENT_QUOTES, 'UTF-8');
-}
+
+
 
 $cita = new Cita();
-$codCita = isset($_POST["codCita"]) ? limpiarCadena($_POST["codCita"]) : "";
-$codPaciente = isset($_POST["codPaciente"]) ? limpiarCadena($_POST["codPaciente"]) : "";
-$codPersonal = isset($_POST["codPersonal"]) ? limpiarCadena($_POST["codPersonal"]) : "";
-$fechaCita = isset($_POST["fechaCita"]) ? limpiarCadena($_POST["fechaCita"]) : "";
-$horaCita = isset($_POST["horaCita"]) ? limpiarCadena($_POST["horaCita"]) : "";
-$estado = isset($_POST["estado"]) ? limpiarCadena($_POST["estado"]) : "";
-$codDiagnostico = isset($_POST["codDiagnostico"]) ? limpiarCadena($_POST["codDiagnostico"]) : "";
-$observaciones = isset($_POST["observaciones"]) ? limpiarCadena($_POST["observaciones"]) : "";
+$codeCita = isset($_GET["codCita"]) ? ($_GET["codCita"]) : "";
+$codCita = isset($_POST["codCita"]) ? ($_POST["codCita"]) : "";
+$codPaciente = isset($_POST["codPaciente"]) ? ($_POST["codPaciente"]) : "";
+$codPersonal = isset($_POST["codPersonal"]) ? ($_POST["codPersonal"]) : "";
+$fechaCita = isset($_POST["fechaCita"]) ? ($_POST["fechaCita"]) : "";
+$horaCita = isset($_POST["horaCita"]) ? ($_POST["horaCita"]) : "";
+$estado = isset($_POST["estado"]) ? ($_POST["estado"]) : "";
+$codDiagnostico = isset($_POST["codDiagnostico"]) ? ($_POST["codDiagnostico"]) : "";
+$observaciones = isset($_POST["observaciones"]) ? ($_POST["observaciones"]) : "";
+$cedula = isset($_POST["cedula"]) ? ($_POST["cedula"]) : "";
 
 switch ($_GET["op"]) {
     case 'listar':
@@ -42,7 +41,7 @@ switch ($_GET["op"]) {
         $result = array('total' => count($data), 'registros' => $data);
 
         // Devuelve los datos como JSON
-        echo json_encode($result);
+        json_encode($result);
         break;
 
     case 'guardarEditar':
@@ -96,5 +95,16 @@ switch ($_GET["op"]) {
 
         // Devolver el resultado como JSON
         echo json_encode($result);
+        break;
+    case 'eliminar':
+        $result = $cita->eliminarDatos($codeCita);
+
+        if ($result['status']) {
+            // Redirigir al usuario con un mensaje de éxito
+            header("Location: ../vistas/mensaje.php?msg=successDelete");
+        } else {
+            // Redirigir con un mensaje de error
+            header("Location: ../vistas/mensaje.php?msg=errorDelete");
+        }
         break;
 }

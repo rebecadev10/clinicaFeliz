@@ -111,7 +111,7 @@ if (empty($departamentos)) {
                     <select title="Cargos" name="codCargo" id="" class="personalDetalle__select">
                         <?php
 
-                        foreach ($especialidades as $reg) {
+                        foreach ($cargos as $reg) {
                             // Compara el valor actual con el valor almacenado en $datosPersonal['codEspecialidad']
                             $selected = ($reg->id == $datosPersonal['codCargos']) ? 'selected' : '';
                             echo '<option value="' . htmlspecialchars($reg['id']) . '"' . $selected . '>' . htmlspecialchars($reg['nombre']) . '</option>';

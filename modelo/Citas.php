@@ -91,6 +91,34 @@ class Cita
         return true;
     }
 
+    public function editarDatos($codCita, $codPaciente, $codPersonal, $fechaCita, $horaCita, $estado, $codDiagnostico, $observaciones)
+    {
+        $citas = $this->readJson($this->file);
+        $updated = false; // Indicador para saber si se actualizó algún dato
+
+        foreach ($citas as &$cita) {
+            if ($cita['codCita'] == $codCita) {
+                // Actualizar los datos de la cita
+                $cita['codPaciente'] = (int)$codPaciente;
+                $cita['codPersonal'] = (int)$codPersonal;
+                $cita['fechaCita'] = $fechaCita;
+                $cita['horaCita'] = $horaCita;
+                $cita['estado'] = $estado;
+                $cita['codDiagnostico'] = (int)$codDiagnostico;
+                $cita['observaciones'] = $observaciones;
+                $updated = true;
+                break;
+            }
+        }
+
+        if ($updated) {
+            $this->writeJson($this->file, $citas);
+            return true; // Se actualizó la cita
+        } else {
+            return false; // No se encontró la cita con el codCita dado
+        }
+    }
+
 
     public function mostrar($codCita)
     {
@@ -161,6 +189,19 @@ class Cita
         $citas = $this->readJson($this->file);
         $citasPaciente = array_filter($citas, fn($cita) => $cita['codPaciente'] == $codPaciente);
 
+        // Leer los archivos adicionales necesarios
+        $personal = $this->readJson($this->personalFile);
+        $diagnosticos = $this->readJson($this->diagnosticosFile);
+
+        // Añadir datos adicionales a cada cita
+        foreach ($citasPaciente as &$cita) {
+            $medico = array_filter($personal, fn($p) => $p['codPersonal'] == $cita['codPersonal']);
+            $diagnostico = array_filter($diagnosticos, fn($d) => $d['id'] == $cita['codDiagnostico']);
+
+            $cita['nombrePersonal'] = $medico ? reset($medico)['nombre1'] . ' ' . reset($medico)['apellido1'] : 'No disponible';
+            $cita['diagnostico'] = $diagnostico ? reset($diagnostico)['descripcion'] : 'No disponible';
+        }
+
         // Ordenar las citas por fecha (y opcionalmente por hora)
         usort($citasPaciente, function ($a, $b) {
             $fechaHoraA = strtotime($a['fechaCita'] . ' ' . $a['horaCita']);
@@ -169,5 +210,55 @@ class Cita
         });
 
         return $citasPaciente;
+    }
+    public function eliminarDatos($codCita)
+    {
+        $citas = $this->readJson($this->file);
+
+        // Buscar la cita por el código dado
+        $cita = array_filter($citas, function ($cita) use ($codCita) {
+            return $cita['codCita'] == $codCita;
+        });
+
+        if (empty($cita)) {
+            return ['status' => false, 'message' => 'Cita no encontrada.'];
+        }
+
+        $cita = reset($cita); // Obtener la primera (y única) cita encontrada
+
+        // Obtener la fecha y hora de la cita desde el archivo JSON
+        $fechaCita = $cita['fechaCita'];
+        $horaCita = $cita['horaCita'];
+
+        // Obtener la fecha y hora actual en formato string
+        $fechaActual = date('Y-m-d');
+        $horaActual = date('H:i:s');
+
+        // Convertir fechas y horas a timestamps para comparar
+        $timestampCita = strtotime($fechaCita . ' ' . $horaCita);
+        $timestampActual = strtotime($fechaActual . ' ' . $horaActual);
+
+        // Debug: Verificar los valores de timestamp
+        error_log("Timestamp Cita: $timestampCita");
+        error_log("Timestamp Actual: $timestampActual");
+
+        // Comparar los timestamps
+        if ($timestampCita <= $timestampActual) {
+            // La cita ya ha pasado o es hoy, no se puede eliminar
+            return ['status' => false];
+        } else {
+            // Filtrar las citas para excluir la que queremos eliminar
+            $citas = array_filter($citas, function ($cita) use ($codCita) {
+                return $cita['codCita'] != $codCita;
+            });
+
+            // Reindexar el array para asegurarse de que las claves sean continuas (opcional)
+            $citas = array_values($citas);
+
+            // Escribir los datos actualizados al archivo JSON
+            $this->writeJson($this->file, $citas);
+
+            return ['status' => true];
+        }
     }
 }

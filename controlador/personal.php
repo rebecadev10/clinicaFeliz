@@ -20,13 +20,9 @@ $fechaEgreso = isset($_POST["fechaEgreso"]) ? $_POST["fechaEgreso"] : "";
 switch ($_GET["op"]) {
 
     case 'listar':
-        // Llama al método 'listar' del modelo
         $rspta = $personal->listar();
 
-        // Prepara un array para almacenar los datos
         $data = array();
-
-        // Recorre directamente el array y agrega cada registro al array de datos
         foreach ($rspta as $reg) {
             $data[] = array(
                 'codPersonal' => $reg['codPersonal'],
@@ -35,23 +31,20 @@ switch ($_GET["op"]) {
                 'nombre2' => $reg['nombre2'],
                 'apellido1' => $reg['apellido1'],
                 'apellido2' => $reg['apellido2'],
-                'codEspecialidad' => $reg['codEspecialidad'],
-                'codCargo' => $reg['codCargo'],
-                'codDepartamento' => $reg['codDepartamento']
+                'especialidad' => $reg['especialidad'],
+                'cargo' => $reg['cargo'],
+                'departamento' => $reg['departamento'],
             );
         }
 
-        // Prepara el resultado con el total de registros y los registros
         $result = array('total' => count($data), 'registros' => $data);
 
-        // Devuelve los datos como JSON
-        echo json_encode($result);
+        json_encode($result);
         break;
+
     case 'guardarEditar':
         if (empty($codPersonal)) {
             $rspta = $personal->insertarDatos($cedula, $nombre1, $nombre2, $apellido1, $apellido2, $codEspecialidad, $codCargo, $codDepartamento, $turno, $fechaIngreso, $fechaEgreso);
-
-            // $rspta = $personal->insertarDatos($codPersonal, $cedula, $nombre1, $nombre2, $apellido1, $apellido2, $codEspecialidad, $codCargo, $codDepartamento, $turno, $fechaIngreso, $fechaEgreso);
 
             if ($rspta) {
                 header("Location: ../vistas/mensaje.php?msg=success");
@@ -70,7 +63,7 @@ switch ($_GET["op"]) {
 
     case 'mostrar':
         $rspta = $personal->mostrar($codePersonal);
-        echo json_encode($rspta); // Retorna el registro específico como JSON
+        echo json_encode($rspta);
         break;
 
     case 'listarPersonal':
@@ -84,6 +77,45 @@ switch ($_GET["op"]) {
         $rspta = $personal->listarPersonalTurno($turno, $codEspecialidad);
         foreach ($rspta as $reg) {
             echo '<option value="' . $reg['codPersonal'] . '">' . $reg['datosPersonal'] . '</option>';
+        }
+        break;
+
+    case 'verificarCitas':
+        if (empty($codePersonal)) {
+            header("Location: ../vistas/pacienteEliminar.php?error=codigoInvalido");
+            exit();
+        }
+
+        $tieneCitas = $personal->verificarCitas($codePersonal);
+
+        if ($tieneCitas) {
+            header("Location: ../vistas/personalEliminar.php?asignado=true&codPersonal=" . urlencode($codePersonal));
+        } else {
+            header("Location: ../vistas/personalEliminar.php?asignado=false&codPersonal=" . urlencode($codePersonal));
+        }
+        break;
+
+    case 'eliminar':
+        $rspta = $personal->eliminar($codPersonal);
+        if ($rspta) {
+            header("Location: ../vistas/mensaje.php?msg=eliminado");
+        } else {
+            header("Location: ../vistas/mensaje.php?msg=error");
+        }
+        break;
+
+    case 'actualizarEgreso':
+        $disponibilidad = 'NO';
+        if (!empty($codPersonal)) {
+            $resultado = $personal->actualizarEgreso($codPersonal, $fechaEgreso, $disponibilidad);
+
+            if ($resultado) {
+                header("Location: ../vistas/mensaje.php?msg=egresoActualizado");
+            } else {
+                header("Location: ../vistas/mensaje.php?msg=errorActualizacion");
+            }
+        } else {
+            header("Location: ../vistas/personalEliminar.php?asignado=error");
         }
         break;
 }

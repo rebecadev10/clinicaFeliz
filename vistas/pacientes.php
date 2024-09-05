@@ -1,6 +1,6 @@
 <?php
 require 'componentes/header.php';
-session_start();
+
 // Incluir el archivo controlador del personal
 
 // recibo el total de registros de mi funcion listar  
@@ -68,7 +68,9 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
                     $reg = $data[$i];
                 ?>
                     <tr>
-                        <td><a class="personal__btn-detalle" href="pacienteDetalleMostrar.php?codPaciente=<?php echo $reg['codPaciente']; ?>">Ver</a></td>
+                        <td><a class="personal__btn-detalle" href="pacienteDetalleMostrar.php?codPaciente=<?php echo $reg['codPaciente']; ?>">Ver</a>
+                            <a class="personal__btn-detalle" href="../controlador/paciente.php?op=verificarCitas&codPaciente=<?php echo $reg['codPaciente']; ?>">Eliminar</a>
+                        </td>
                         <td><?php echo $reg['cedula']; ?></td>
                         <td><?php echo $reg['nombre1'] . ' ' . $reg['nombre2']; ?></td>
                         <td><?php echo $reg['apellido1'] . ' ' . $reg['apellido2']; ?></td>

@@ -2,6 +2,12 @@
 
 require 'componentes/header.php';
 session_start();
+if (isset($_SESSION['usuario'])) {
+    $usuario = $_SESSION['usuario'];
+    $rol = isset($_SESSION['rol']) ? $_SESSION['rol'] : null; // Obtener el rol del usuario
+} else {
+    $rol = null; // No hay sesión activa, rol no definido
+}
 
 // Verificar si los datos ya están en la sesión
 if (!isset($_SESSION['listaCita'])) {
@@ -39,15 +45,25 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
         <h2 class="personal__titulo">
             Citas registrados
         </h2>
-        <div class="personal__btn">
-            <a class="personal__btn-content" href="turno.php">Nueva Cita</a>
-        </div>
+        <?php
+        if ($rol === 'Enfermero') { ?>
+            <div class="personal__btn">
+                <!-- solo los enfermeros pueden agregar citas -->
+
+                <a class="personal__btn-content" href="turno.php">Nueva Cita</a>
+
+
+            </div>
+        <?php } ?>
     </div>
     <div class="personal__tabla-container">
         <table class="personal__tabla ">
             <thead>
                 <tr>
-                    <th>Opción</th>
+                    <?php
+                    if ($rol === 'Enfermero') { ?>
+                        <th>Opción</th>
+                    <?php } ?>
                     <th>Cédula Paciente</th>
                     <th>Nombre Paciente</th>
                     <th>Nombre medico</th>
@@ -65,7 +81,16 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
                 ?>
 
                     <tr>
-                        <td><a class="personal__btn-detalle" href="citaDetalleMostrar.php?codCita=<?php echo $reg['codCita']; ?>">Ver</a></td>
+                        <?php
+                        if ($rol === 'Enfermero') { ?>
+                            <td>
+
+                                <a class="personal__btn-detalle" href="citaDetalleMostrar.php?codCita=<?php echo $reg['codCita']; ?>">Ver</a>
+
+                                <a class="personal__btn-detalle" href="../controlador/citas.php?op=eliminar&codCita=<?php echo $reg['codCita']; ?>">Eliminar</a>
+
+                            </td>
+                        <?php } ?>
                         <td><?php echo $reg['cedulaPaciente']; ?></td>
                         <td><?php echo $reg['nombrePaciente']; ?></td>
                         <td><?php echo $reg['nombrePersonal']; ?></td>

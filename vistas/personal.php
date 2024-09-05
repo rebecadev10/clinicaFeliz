@@ -1,6 +1,9 @@
 <?php
+
+
+
 require 'componentes/header.php';
-session_start();
+
 
 // Verificar si los datos ya están en la sesión
 if (!isset($_SESSION['listaPer'])) {
@@ -61,13 +64,18 @@ $fin = min($inicio + $registrosPorPagina, $totalRegistros);
                     $reg = $data[$i];
                 ?>
                     <tr>
-                        <td><a class="personal__btn-detalle" href="personalDetalleMostrar.php?codPersonal=<?php echo $reg['codPersonal']; ?>">Ver</a></td>
+                        <td class="personal__acciones">
+                            <a class="personal__btn-detalle" href="personalDetalleMostrar.php?codPersonal=<?php echo $reg['codPersonal']; ?>">Ver</a>
+                            <a class="personal__btn-detalle-alert" href="../controlador/personal.php?op=verificarCitas&codPersonal=<?php echo $reg['codPersonal']; ?>">Eliminar</a>
+                            <a class="personal__btn-detalle" href="../controlador/usuarios.php?op=verificarUsuario&codPersonal=<?php echo $reg['codPersonal']; ?>">Usuario</a>
+                        </td>
+
                         <td><?php echo $reg['cedula']; ?></td>
                         <td><?php echo $reg['nombre1'] . ' ' . $reg['nombre2']; ?></td>
                         <td><?php echo $reg['apellido1'] . ' ' . $reg['apellido2']; ?></td>
-                        <td><?php echo $reg['codEspecialidad']; ?></td>
-                        <td><?php echo $reg['codCargo']; ?></td>
-                        <td><?php echo $reg['codDepartamento']; ?></td>
+                        <td><?php echo $reg['especialidad']; ?></td>
+                        <td><?php echo $reg['cargo']; ?></td>
+                        <td><?php echo $reg['departamento']; ?></td>
                     </tr>
                 <?php endfor; ?>
             </tbody>
